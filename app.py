@@ -26,8 +26,8 @@ def make_app(conf):
         'conf' : conf
     }
     return tornado.web.Application([
-        (r"/buildings/by_zip_code/((?:\d+(?:,\d+)*)*)", BuildingsByZipCodeHandler, settings),
-        (r"/buildings/by_year/((?:\d+(?:,\d+)*)*)", BuildingsByAddYearHandler, settings)
+        (r"/buildings/by_zip_code/((?:\d+(?:,\d+)*)*)/?", BuildingsByZipCodeHandler, settings),
+        (r"/buildings/by_year/((?:\d+(?:,\d+)*)*)/?", BuildingsByAddYearHandler, settings)
     ])
 
 if __name__ == "__main__":
