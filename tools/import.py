@@ -2,6 +2,7 @@
 
 import sys
 import os
+import argparse
 
 sys.path.insert(1, os.path.join(sys.path[0], '..', 'lib'))
 
@@ -13,8 +14,6 @@ import config
 import log
 
 from log import info
-
-BATCH_SIZE = 1000
 
 
 def fetch_all(id_obj_start, batch_size):
@@ -35,13 +34,22 @@ def load_data(conn, id_obj_start, batch_size):
         buildings.add_from_arcgis(conn, response)
 
 def run():
-    log.init()
-    conf = config.load()
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-d", help="Log level DEBUG", dest='debug', action="store_true")
+    parser.add_argument("-c", help="Config file path", dest='conf_file')
+    parser.add_argument("-b", help="Batch size for fetching", dest='batch_size', default=1000, type=int)
+
+    args = parser.parse_args()
+
+    log.init(debug=args.debug)
+    conf = config.load(args.conf_file)
     conn = db.connect(conf['db_path'])
     response = arcgis.fetch_row(1) # use this response to build tables from schema, discard the data
     buildings.init_from_arcgis(conn, response)
     last_id = buildings.get_last_id(conn, response.primary_key)
-    load_data(conn, last_id, BATCH_SIZE)
+    info("Starting from object id %d" % last_id)
+    load_data(conn, last_id, args.batch_size)
     
     
 
