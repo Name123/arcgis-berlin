@@ -25,7 +25,7 @@ def fetch_all(id_obj_start, batch_size):
         info('Fetched %d records' % len(response))
         if len(response) < batch_size:
             info('All data fetched')
-            raise StopIteration
+            return
         id_obj_start = id_obj_end
 
 
