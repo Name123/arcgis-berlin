@@ -17,8 +17,10 @@ async def cnt_by_add_year(db_path, zip_code_str=None):
           sql = """
              SELECT strftime('%Y', str_datum) as year, COUNT(*) FROM buildings 
           """ + ((" WHERE plz IN (%s)" % zip_code_str) if zip_code_str else "") + """
-          GROUP BY year"""
+          GROUP BY year
+          ORDER BY year
+          """
           cursor = await conn.execute(sql)
           rows = await cursor.fetchall()
           await cursor.close()
-          return sorted(rows)
+          return rows
